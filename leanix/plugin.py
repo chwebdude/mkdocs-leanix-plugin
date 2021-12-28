@@ -14,14 +14,17 @@ from mkdocs.plugins import BasePlugin
 
 
 log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class LeanIXPlugin(BasePlugin):
     
     config_scheme = (
         ('api_token', config_options.Type(str, default='')),
-        ('baseurl', config_options.Type(str, default='')),
+        ('baseurl', config_options.Type(str, default='https://app.leanix.net')),
         ('workspaceid', config_options.Type(str, default='')),
+        ('material', config_options.Type(bool, default=None)),
+        
     )
 
     def __init__(self):
@@ -44,25 +47,39 @@ class LeanIXPlugin(BasePlugin):
     #     return env
     
     def on_config(self, config):        
-        try:
-            auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token' # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
-            request_url = self.config['baseurl'] + '/services/pathfinder/v1/graphql' # same thing as with the auth_url
+        # Check if is material theme
+        if self.config['material'] is None:
+            log.debug('Autodetermine if material theme is used')
+            
+            if 'material' in config['theme'].name:
+                self.useMaterial = True
+            else:
+                self.useMaterial = False
+        else:
+            log.debug('Use explicit configuration')
+            self.useMaterial = self.config['material']
+        log.debug(f"Material theme is {self.useMaterial}")
+
+        return config
+        # try:
+        #     auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token' # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
+        #     request_url = self.config['baseurl'] + '/services/pathfinder/v1/graphql' # same thing as with the auth_url
 
 
-            response = requests.post(auth_url,
-                                    auth=('apitoken', self.config['api_token'] ),
-                                    data={'grant_type': 'client_credentials'})
-            response.raise_for_status() # this merely throws an error, if Webserver does not respond with a '200 OK'
-            access_token = response.json()['access_token']
+        #     response = requests.post(auth_url,
+        #                             auth=('apitoken', self.config['api_token'] ),
+        #                             data={'grant_type': 'client_credentials'})
+        #     response.raise_for_status() # this merely throws an error, if Webserver does not respond with a '200 OK'
+        #     access_token = response.json()['access_token']
 
-            auth_header = 'Bearer ' + access_token
-            self.header = {'Authorization': auth_header}
-            log.debug("Authenticated against LeanIX")
-            return config
-        except:            
-            log.exception("Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")                    
-            raise
-        
+        #     auth_header = 'Bearer ' + access_token
+        #     self.header = {'Authorization': auth_header}
+        #     log.debug("Authenticated against LeanIX")
+        #     return config
+        # except:            
+        #     log.exception("Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")                    
+        #     raise
+
     # def on_post_build(self, config):
     #     return
 
