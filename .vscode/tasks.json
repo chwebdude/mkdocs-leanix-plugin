@@ -1,0 +1,46 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "detail": "Create Test Docs",
+            "label": "CreateTestDocs",
+            "type": "shell",
+            "command": "mkdocs new test",
+        },
+        {
+            "detail": "Delete Test Directory",
+            "label": "DeleteTestDirectory",
+            "type": "shell",
+            "command": "rm -rf test",
+        },
+        {
+            "label": "Build",
+            "detail": "Build package",
+            "type": "shell",
+            "command": "python setup.py sdist bdist_wheel",
+        },
+        {
+            "detail": "Uninstall Package",
+            "label": "UninstallPackage",
+            "type": "shell",
+            "command": "pip uninstall mkdocs-leanix-plugin -y"
+        },
+        {
+            "detail": "Install Package",
+            "label": "InstallPackage",
+            "type": "shell",
+            "command": "pip install dist/mkdocs_leanix_plugin*.whl"
+        },
+        {
+            "label": "RebuildAndInstall",
+            "dependsOn": [
+                "UninstallPackage",
+                "Build",
+                "InstallPackage"
+            ],
+            "dependsOrder": "sequence"
+        }
+    ]
+}

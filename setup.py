@@ -30,7 +30,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'mkdocs.plugins': [
-            'leanix-plugin = mkdocs_leanix_plugin.plugin:LeanIXPlugin'
+            'leanix = leanix.plugin:LeanIXPlugin'
         ]
     }
 )
