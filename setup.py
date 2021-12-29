@@ -11,7 +11,7 @@ setup(
     author='Fabrice Andreis',
     author_email='webdude@duck.com',
     license='MIT',
-    python_requires='>=2.7',
+    python_requires='>=3.6',
     install_requires=[
         'mkdocs>=1.0.4'
     ],
@@ -33,8 +33,6 @@ setup(
             'leanix = leanix.plugin:LeanIXPlugin'
         ]
     },
-    include_package_data=True,
-    package_data = {
-        'templates': [ 'leanix/templates/*.md' ],
-    }
+
+    include_package_data = True
 )

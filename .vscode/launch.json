@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "name": "Python: Current File",
             "type": "python",
@@ -61,7 +60,15 @@
             // "command": "echo ' ' >> ${workspaceFolder}/test/docs/index.md",
             "command": "touch ${workspaceFolder}/test/docs/index.md && exit",
             "internalConsoleOptions": "neverOpen",
-
+        },
+        {
+            "name": "Pack",
+            "type": "node-terminal",
+            "request": "launch",
+            // "command": "echo ' ' >> ${workspaceFolder}/test/docs/index.md",
+            "command": "rm -rf build && rm -rf dist && rm -rf mkdocs_leanix_plugin.egg-info && python setup.py bdist_wheel sdist --formats gztar",
+            "autoAttachChildProcesses": false,
+            
         }
     ]
 }
