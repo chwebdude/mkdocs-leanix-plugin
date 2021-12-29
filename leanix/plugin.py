@@ -54,6 +54,7 @@ class LeanIXPlugin(BasePlugin):
 
     # def on_env(self, env, config, files):
     #     return env
+
     
     def on_config(self, config):        
         # Check if is material theme
@@ -69,6 +70,10 @@ class LeanIXPlugin(BasePlugin):
             self.useMaterial = self.config['material']
         log.debug(f"Material theme is {self.useMaterial}")
         # return config # Todo: Remove
+
+
+
+
         try:
             auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token' # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
             request_url = self.config['baseurl'] + '/services/pathfinder/v1/graphql' # same thing as with the auth_url
@@ -105,6 +110,20 @@ class LeanIXPlugin(BasePlugin):
 
     # def on_page_read_source(self, page, config):
     #     return ""
+    
+    def get_user(self, userid):
+        log.debug("Get User with ID %s", userid)
+        url = self.config['baseurl'] + "/services/mtm/v1/workspaces/"+ self.config['workspaceid'] + "/users/"+ userid
+        response = requests.get(url=url, headers=self.header)
+        response.raise_for_status()
+        user = response.json()['data']
+        displayName = user['displayName']
+        email = user['email']
+
+        log.debug(f'Got {email}')
+        return f'[{displayName}](mailto:{email})'
+        
+
 
     def _factsheet(self, matchobj):
         log.debug("Quering...")
@@ -120,7 +139,7 @@ class LeanIXPlugin(BasePlugin):
 
 
         template = env.get_template("factsheet_material.md")
-        return template.render(fs = factsheet)
+        return template.render(fs = factsheet, get_user=self.get_user)
 
         # return "!!! Factsheet summary\n\t\n\tResponsible:"
 

@@ -1,5 +1,3 @@
-{% import 'user.md' as user %}
-
 ## {{ fs.displayName }}
 
 === "Overview"
@@ -15,7 +13,7 @@
 
 === "Subscriptions"
 {% for subs in fs.subscriptions %}
-* {{ user.user(subs.userId) }}{% for role in subs.linkedRoles %}<span style="background-color:grey; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%; color: #fff">{{ role.name }}</span> {% endfor %}
+    * {{ get_user(subs.userId) }} {% for role in subs.linkedRoles %}<span style="background-color:grey; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%; color: #fff">{{ role.name }}</span> {% endfor %}
 {% endfor %}
 
     _Example_:
