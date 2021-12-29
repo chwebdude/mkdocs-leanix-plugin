@@ -68,25 +68,25 @@ class LeanIXPlugin(BasePlugin):
             log.debug('Use explicit configuration')
             self.useMaterial = self.config['material']
         log.debug(f"Material theme is {self.useMaterial}")
-        return config # Todo: Remove
-        # try:
-        #     auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token' # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
-        #     request_url = self.config['baseurl'] + '/services/pathfinder/v1/graphql' # same thing as with the auth_url
+        # return config # Todo: Remove
+        try:
+            auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token' # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
+            request_url = self.config['baseurl'] + '/services/pathfinder/v1/graphql' # same thing as with the auth_url
 
 
-        #     response = requests.post(auth_url,
-        #                             auth=('apitoken', self.config['api_token'] ),
-        #                             data={'grant_type': 'client_credentials'})
-        #     response.raise_for_status() # this merely throws an error, if Webserver does not respond with a '200 OK'
-        #     access_token = response.json()['access_token']
+            response = requests.post(auth_url,
+                                    auth=('apitoken', self.config['api_token'] ),
+                                    data={'grant_type': 'client_credentials'})
+            response.raise_for_status() # this merely throws an error, if Webserver does not respond with a '200 OK'
+            access_token = response.json()['access_token']
 
-        #     auth_header = 'Bearer ' + access_token
-        #     self.header = {'Authorization': auth_header}
-        #     log.debug("Authenticated against LeanIX")
-        #     return config
-        # except:            
-        #     log.exception("Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")                    
-        #     raise
+            auth_header = 'Bearer ' + access_token
+            self.header = {'Authorization': auth_header}
+            log.debug("Authenticated against LeanIX")
+            return config
+        except:            
+            log.exception("Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")                    
+            raise
 
     # def on_post_build(self, config):
     #     return
@@ -107,21 +107,20 @@ class LeanIXPlugin(BasePlugin):
     #     return ""
 
     def _factsheet(self, matchobj):
-        
-        # url = self.config['baseurl'] + "/services/pathfinder/v1/factSheets/d3bdeca8-8f79-4ee9-af4b-e390accf9f3d"
+        log.debug("Quering...")
+        url = self.config['baseurl'] + "/services/pathfinder/v1/factSheets/d3bdeca8-8f79-4ee9-af4b-e390accf9f3d"
 
-        # response = requests.get(url=url, headers=self.header)
-        # response.raise_for_status()
+        response = requests.get(url=url, headers=self.header)
+        response.raise_for_status()
         
-        # factsheet = response.json()['data']
+        factsheet = response.json()['data']
         # displayName = factsheet['displayName']
-        p = pathlib.Path('./templates/factsheet_material.md')
-        print(p.resolve())
-        print(os.path.dirname(os.path.abspath(__file__))+"/templates/factsheet_material.md")
+
+        
 
 
         template = env.get_template("factsheet_material.md")
-        return template.render()
+        return template.render(fs = factsheet)
 
         # return "!!! Factsheet summary\n\t\n\tResponsible:"
 

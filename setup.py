@@ -33,7 +33,7 @@ setup(
             'leanix = leanix.plugin:LeanIXPlugin'
         ]
     },
-    include_package_data=True,    
+    include_package_data=True,
     package_data = {
         'templates': [ 'leanix/templates/*.md' ],
     }

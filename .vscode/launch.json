@@ -53,6 +53,15 @@
                 "build"
             ],
             "cwd": "${workspaceFolder}/test"
+        },
+        {
+            "name": "Touch index.md",
+            "type": "node-terminal",
+            "request": "launch",
+            // "command": "echo ' ' >> ${workspaceFolder}/test/docs/index.md",
+            "command": "touch ${workspaceFolder}/test/docs/index.md && exit",
+            "internalConsoleOptions": "neverOpen",
+
         }
     ]
 }
