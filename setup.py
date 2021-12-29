@@ -7,7 +7,7 @@ setup(
     description='A MkDocs plugin to import LeanIX data',
     long_description='Include LeanIX Factsehhets and other stuff',
     keywords='mkdocs leanix',
-    url='',
+    url='https://github.com/chwebdude/mkdocs-leanix-plugin',
     author='Fabrice Andreis',
     author_email='webdude@duck.com',
     license='MIT',
@@ -32,5 +32,9 @@ setup(
         'mkdocs.plugins': [
             'leanix = leanix.plugin:LeanIXPlugin'
         ]
+    },
+    include_package_data=True,    
+    package_data = {
+        'templates': [ 'leanix/templates/*.md' ],
     }
 )

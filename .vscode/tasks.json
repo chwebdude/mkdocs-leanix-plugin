@@ -19,7 +19,7 @@
             "label": "Build",
             "detail": "Build package",
             "type": "shell",
-            "command": "python setup.py sdist bdist_wheel",
+            "command": "rm -rf build && rm -rf dist && python setup.py sdist bdist_wheel",
         },
         {
             "detail": "Uninstall Package",

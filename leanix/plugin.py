@@ -4,6 +4,8 @@ import re
 import json 
 import requests 
 import logging
+import pathlib
+
 
 from timeit import default_timer as timer
 from datetime import datetime, timedelta
@@ -12,6 +14,13 @@ from mkdocs import utils as mkdocs_utils
 from mkdocs.config import config_options, Config
 from mkdocs.plugins import BasePlugin
 
+from jinja2 import Environment, PackageLoader, select_autoescape
+
+
+env = Environment(
+    loader=PackageLoader(__package__, "templates")
+
+)
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -59,8 +68,7 @@ class LeanIXPlugin(BasePlugin):
             log.debug('Use explicit configuration')
             self.useMaterial = self.config['material']
         log.debug(f"Material theme is {self.useMaterial}")
-
-        return config
+        return config # Todo: Remove
         # try:
         #     auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token' # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
         #     request_url = self.config['baseurl'] + '/services/pathfinder/v1/graphql' # same thing as with the auth_url
@@ -100,17 +108,22 @@ class LeanIXPlugin(BasePlugin):
 
     def _factsheet(self, matchobj):
         
-        url = self.config['baseurl'] + "/services/pathfinder/v1/factSheets/d3bdeca8-8f79-4ee9-af4b-e390accf9f3d"
+        # url = self.config['baseurl'] + "/services/pathfinder/v1/factSheets/d3bdeca8-8f79-4ee9-af4b-e390accf9f3d"
 
-        response = requests.get(url=url, headers=self.header)
-        response.raise_for_status()
+        # response = requests.get(url=url, headers=self.header)
+        # response.raise_for_status()
         
-        factsheet = response.json()['data']
-        displayName = factsheet['displayName']
+        # factsheet = response.json()['data']
+        # displayName = factsheet['displayName']
+        p = pathlib.Path('./templates/factsheet_material.md')
+        print(p.resolve())
+        print(os.path.dirname(os.path.abspath(__file__))+"/templates/factsheet_material.md")
 
-        
-        
-        return "!!! Factsheet summary\n\t"+displayName+"\n\tResponsible: Daniel hass"
+
+        template = env.get_template("factsheet_material.md")
+        return template.render()
+
+        # return "!!! Factsheet summary\n\t\n\tResponsible:"
 
     def on_page_markdown(self, markdown, page, config, files):
         pattern = r'(```leanix-factsheet)\s*\n(.*)\n(```)'

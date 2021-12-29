@@ -1,4 +1,4 @@
-# mkdocs-leanix-template
+# mkdocs-leanix-plugin
 
 This is a plugin for MkDocs to display data from LeanIX.
 
