@@ -132,7 +132,12 @@ class LeanIXPlugin(BasePlugin):
         self.user_cache[userid] = f'[{displayName}](mailto:{email})' # Save user information in cache
         return self.user_cache[userid]
         
-
+    def get_font_color(self, background):
+        h = background.lstrip('#') # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
+        rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+        if (rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114) > 186: # https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
+            return "#000"        
+        return "#fff"
 
     def _factsheet(self, matchobj):
         log.debug("Quering factsheet"+ matchobj.group('id'))
@@ -144,7 +149,7 @@ class LeanIXPlugin(BasePlugin):
         factsheet = response.json()['data']      
 
         template = env.get_template("factsheet_material.md")
-        return template.render(fs = factsheet, get_user=self.get_user)
+        return template.render(fs = factsheet, get_user=self.get_user, get_font_color=self.get_font_color)
 
         
 
