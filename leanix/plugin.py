@@ -36,6 +36,8 @@ class LeanIXPlugin(BasePlugin):
         
     )
 
+    factsheet_regex = r'(```leanix-factsheet\s*\n)(?P<id>.*)(\n```)'
+
     def __init__(self):
         self.enabled = True
         self.total_time = 0
@@ -56,7 +58,7 @@ class LeanIXPlugin(BasePlugin):
     #     return env
 
     
-    def on_config(self, config):        
+    def on_config(self, config, **kwargs):        
         # Check if is material theme
         if self.config['material'] is None:
             log.debug('Autodetermine if material theme is used')
@@ -111,7 +113,13 @@ class LeanIXPlugin(BasePlugin):
     # def on_page_read_source(self, page, config):
     #     return ""
     
+    user_cache = {}
+
     def get_user(self, userid):
+        if userid in self.user_cache:
+            log.debug("Get cached user with ID %s", userid)
+            return self.user_cache[userid]
+        
         log.debug("Get User with ID %s", userid)
         url = self.config['baseurl'] + "/services/mtm/v1/workspaces/"+ self.config['workspaceid'] + "/users/"+ userid
         response = requests.get(url=url, headers=self.header)
@@ -121,31 +129,27 @@ class LeanIXPlugin(BasePlugin):
         email = user['email']
 
         log.debug(f'Got {email}')
-        return f'[{displayName}](mailto:{email})'
+        self.user_cache[userid] = f'[{displayName}](mailto:{email})' # Save user information in cache
+        return self.user_cache[userid]
         
 
 
     def _factsheet(self, matchobj):
-        log.debug("Quering...")
-        url = self.config['baseurl'] + "/services/pathfinder/v1/factSheets/d3bdeca8-8f79-4ee9-af4b-e390accf9f3d"
+        log.debug("Quering factsheet"+ matchobj.group('id'))
+        url = self.config['baseurl'] + "/services/pathfinder/v1/factSheets/" + matchobj.group('id')
 
         response = requests.get(url=url, headers=self.header)
         response.raise_for_status()
         
-        factsheet = response.json()['data']
-        # displayName = factsheet['displayName']
-
-        
-
+        factsheet = response.json()['data']      
 
         template = env.get_template("factsheet_material.md")
         return template.render(fs = factsheet, get_user=self.get_user)
 
-        # return "!!! Factsheet summary\n\t\n\tResponsible:"
+        
 
-    def on_page_markdown(self, markdown, page, config, files):
-        pattern = r'(```leanix-factsheet)\s*\n(.*)\n(```)'
-        return re.sub(pattern, self._factsheet, markdown)
+    def on_page_markdown(self, markdown, **kwargs):
+        return re.sub(self.factsheet_regex, self._factsheet, markdown)
         # return markdown
 
     # def on_page_content(self, html, page, config, files):
