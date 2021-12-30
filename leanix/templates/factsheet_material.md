@@ -1,8 +1,7 @@
 ## {{ fs.displayName }}
 
-=== "Overview"
-    
-    {{ fs.description }}
+=== "Overview"    
+    {{ fs.description | replace("\n", "\n\t") }}
 
     {% for tag in fs.tags %} <span style="background-color:{{ tag.bgColor }}; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%">{{ tag.name }}</span> {% endfor %}
 
