@@ -9,7 +9,7 @@ setup(
     keywords='mkdocs leanix',
     url='https://github.com/chwebdude/mkdocs-leanix-plugin',
     author='Fabrice Andreis',
-    author_email='webdude@duck.com',
+    author_email='fabrice@andreis.dev',
     license='MIT',
     python_requires='>=3.6',
     install_requires=[
