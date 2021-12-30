@@ -18,3 +18,11 @@
     * {{ get_user(subs.userId) }} {% for role in subs.linkedRoles %}<span style="background-color:grey; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%; color: #fff">{{ role.name }}</span> {% endfor %}
     {% endfor %}
 {% endif %}
+
+=== "Lifecycle"
+
+    {% set lc = fs.fields | selectattr("name", "equalto", "lifecycle") | list | first %}
+
+    {% for phase in lc.data.phases %}
+    * {{ phase.startDate }} - {{ phase.phase }}
+    {% endfor %}
