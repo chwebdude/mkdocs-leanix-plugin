@@ -8,9 +8,9 @@
 
 name: Upload Python Test Package
 
-on:
-  workflow_dispatch:
-  push:
+# on:
+#   workflow_dispatch:
+#   push:
 
 jobs:
   deploy:

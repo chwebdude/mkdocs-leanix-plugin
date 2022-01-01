@@ -1,5 +1,5 @@
+'''Package description'''
 from setuptools import setup, find_packages
-
 
 setup(
     name='mkdocs-leanix-plugin',

@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/python-3
 {
-	"name": "Python 3",
+	"name": "MkDocs LeanIX Plugin - Python 3",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": "..",
@@ -34,7 +34,9 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-python.python",
-		"ms-python.vscode-pylance"
+		"ms-python.vscode-pylance",
+		"github.vscode-pull-request-github",
+		"me-dutour-mathieu.vscode-github-actions"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

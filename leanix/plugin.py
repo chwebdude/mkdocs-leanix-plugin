@@ -1,16 +1,11 @@
-import os
-import sys
+'''A MkDocs plugin to import data from LeanIX and render it as markdown'''
 import re
-import json
 import requests
 import logging
-import pathlib
 
 from timeit import default_timer as timer
-from datetime import datetime, timedelta
 
-from mkdocs import utils as mkdocs_utils
-from mkdocs.config import config_options, Config
+from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
 from jinja2 import Environment, PackageLoader, select_autoescape
