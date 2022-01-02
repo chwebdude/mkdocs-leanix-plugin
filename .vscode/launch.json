@@ -69,6 +69,13 @@
             "command": "rm -rf build && rm -rf dist && rm -rf mkdocs_leanix_plugin.egg-info && python setup.py bdist_wheel sdist --formats gztar",
             "autoAttachChildProcesses": false,
             
+        },
+        {
+            "name": "Linter",
+            "type": "python",
+            "module": "pylint",
+            "request": "launch",
+            "args": ["leanix", "--output-format=colorized"]
         }
     ]
 }

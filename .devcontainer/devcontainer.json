@@ -36,7 +36,8 @@
 		"ms-python.python",
 		"ms-python.vscode-pylance",
 		"github.vscode-pull-request-github",
-		"me-dutour-mathieu.vscode-github-actions"
+		"me-dutour-mathieu.vscode-github-actions",
+		"njpwerner.autodocstring"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

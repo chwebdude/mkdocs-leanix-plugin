@@ -24,4 +24,4 @@ jobs:
     
     - name: Analysing the code with pylint
       run: |
-         pylint $(find . -name "*.py" | xargs)
+         pylint $(find . -name "*.py" | xargs) --fail-under=8
