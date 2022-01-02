@@ -47,7 +47,7 @@ jobs:
       with:        
         token: ${{ secrets.GITHUB_TOKEN }}
         owner: '${{ env.GITHUB_ACTOR }}'
-        repository: '${{ $GITHUB_SERVER_URL }}/${{ $GITHUB_REPOSITORY }}'
+        repository: '${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}'
         milestone: '${{ steps.gitversion.outputs.semVer }}'
         name: 'v${{ steps.gitversion.outputs.semVer }}'        
         
