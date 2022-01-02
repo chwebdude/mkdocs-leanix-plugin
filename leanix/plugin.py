@@ -109,13 +109,13 @@ class LeanIXPlugin(BasePlugin):
         # Check if is rgba
         match = re.match(self.rgba_regex, background)
         if match:
-            log.debug(f'Parse {background} as rgb(a) value with regex')
+            log.debug("Parse %s as rgb(a) value with regex", background)
             red = int(match.group('red'))
             green = int(match.group('green'))
             blue = int(match.group('blue'))
 
         else:
-            log.debug(f'Parse {background} as Hex value')
+            log.debug("Parse %s as Hex value", background)
             # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
             h = background.lstrip('#').lower()
             rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
