@@ -49,8 +49,7 @@ jobs:
       with:        
         token: ${{ secrets.GITHUB_TOKEN }}
         owner: 'chwebdude'
-        repository: '${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}'
-        milestone: '${{ steps.gitversion.outputs.semVer }}'
+        repository: 'mkdocs-leanix-plugin'
         name: 'v${{ steps.gitversion.outputs.semVer }}'        
         
 
