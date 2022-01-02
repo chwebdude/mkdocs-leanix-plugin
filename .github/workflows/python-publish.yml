@@ -15,9 +15,7 @@ on:
       branches: 
         - master
 
-env:
- DOTNET_CLI_TELEMETRY_OPTOUT: 1
- 
+
 jobs:
   deploy:
 
@@ -39,6 +37,8 @@ jobs:
 
     - uses: gittools/actions/gitreleasemanager/setup@v0.9.2
       name: Install GitReleaseManager
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       with:
         versionSpec: '0.10.x'
 
@@ -46,8 +46,8 @@ jobs:
       name: Create release with GitReleaseManager      
       with:        
         token: ${{ secrets.GITHUB_TOKEN }}
-        owner: 'someOwner'
-        repository: 'someRepository'
+        owner: '${{ env.GITHUB_ACTOR }}'
+        repository: '${{ $GITHUB_SERVER_URL }}/${{ $GITHUB_REPOSITORY }}'
         milestone: '${{ steps.gitversion.outputs.semVer }}'
         name: 'v${{ steps.gitversion.outputs.semVer }}'        
         
