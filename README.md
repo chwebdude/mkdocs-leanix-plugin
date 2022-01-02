@@ -38,19 +38,19 @@ d3bdeca8-8f79-4ee9-af4b-e390accf9f3d
 ````
 #### Overview
 
-![Overview](docs/img/Overview.png)
+![Overview](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Overview.png)
 
 #### Documents
 
-![Documents](docs/img/Documents.png)
+![Documents](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Documents.png)
 
 #### Subscriptions
 
-![Subscriptions](docs/img/Subscriptions.png)
+![Subscriptions](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Subscriptions.png)
 
 #### Lifecycle
 
-![Lifecycle](docs/img/Lifecycle.png)
+![Lifecycle](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Lifecycle.png)
 
 [mkdocs]: https://www.mkdocs.org/
 [mkdocs-plugins]: http://www.mkdocs.org/user-guide/plugins/
