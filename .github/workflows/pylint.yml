@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   build:
+    name: Lint using Python ${{ matrix.python-version }}    
     runs-on: ubuntu-latest
     strategy:
       matrix:
