@@ -8,9 +8,10 @@
 
 name: Upload Python Test Package
 
-# on:
+on:
+
 #   workflow_dispatch:
-#   push:
+   push:
 
 jobs:
   deploy:
@@ -19,7 +20,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+    
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -32,7 +44,7 @@ jobs:
        
     - name: Build
       run: |
-        sed -i "/^    version=/ s/[0-9]\.[0-9]\.[0-9]/&-$(date +%s)/" setup.py
+        sed -i "/^    version=/ s/[0-9]\.[0-9]\.[0-9]/${{ steps.gitversion.outputs.semVer }}/" setup.py
         python setup.py sdist bdist_wheel
         
     - name: Publish
