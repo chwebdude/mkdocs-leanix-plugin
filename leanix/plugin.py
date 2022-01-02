@@ -20,6 +20,9 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class LeanIXPlugin(BasePlugin):
+    """
+    Plugin to fetch LeanIX Data and render it as markdown in MkDocs.
+    """
     config_scheme = (
         ('api_token', config_options.Type(str, default='')),
         ('baseurl', config_options.Type(str, default='https://app.leanix.net')),
@@ -31,24 +34,29 @@ class LeanIXPlugin(BasePlugin):
     factsheet_regex = r'(```leanix-factsheet\s*\n)(?P<id>.*)(\n```)'
     rgba_regex = r'[rRgGbBaA]{3,4}\s*\(\s*(?P<red>\d{1,3})[,\s]*(?P<green>\d{1,3})[,\s]*(?P<blue>\d{1,3})[,\s]*.*\)'
     user_cache = {}
+    use_material = False
+    header = {}
 
     def __init__(self):
         self.enabled = True
         self.total_time = 0
 
     def on_config(self, config, **kwargs):
+        """
+        Executed on plugin configuration from MkDocs
+        """
         # Check if is material theme
         if self.config['material'] is None:
             log.debug('Autodetermine if material theme is used')
 
             if 'material' in config['theme'].name:
-                self.useMaterial = True
+                self.use_material = True
             else:
-                self.useMaterial = False
+                self.use_material = False
         else:
             log.debug('Use explicit configuration')
-            self.useMaterial = self.config['material']
-        log.debug("Material theme is %s ", self.useMaterial)
+            self.use_material = self.config['material']
+        log.debug("Material theme is %s ", self.use_material)
 
         try:
             # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
@@ -117,8 +125,8 @@ class LeanIXPlugin(BasePlugin):
         else:
             log.debug("Parse %s as Hex value", background)
             # https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
-            h = background.lstrip('#').lower()
-            rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+            hue = background.lstrip('#').lower()
+            rgb = tuple(int(hue[i:i+2], 16) for i in (0, 2, 4))
             red = rgb[0]
             green = rgb[1]
             blue = rgb[2]
@@ -130,7 +138,7 @@ class LeanIXPlugin(BasePlugin):
         return "#fff"
 
     def _factsheet(self, matchobj):
-        log.debug("Quering factsheet" + matchobj.group('id'))
+        log.debug("Quering factsheet %s", matchobj.group('id'))
         url = self.config['baseurl'] + \
             "/services/pathfinder/v1/factSheets/" + matchobj.group('id')
 
@@ -143,14 +151,7 @@ class LeanIXPlugin(BasePlugin):
         return template.render(fs=factsheet, get_user=self.get_user, get_font_color=self.get_font_color)
 
     def on_page_markdown(self, markdown, **kwargs):
+        """
+        Called when markdown is generated in MkDocs
+        """
         return re.sub(self.factsheet_regex, self._factsheet, markdown)
-        # return markdown
-
-    # def on_page_content(self, html, page, config, files):
-    #     return html
-
-    # def on_page_context(self, context, page, config, nav):
-    #     return context
-
-    # def on_post_page(self, output_content, page, config):
-    #     return output_content
