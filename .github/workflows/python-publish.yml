@@ -48,7 +48,7 @@ jobs:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       with:        
         token: ${{ secrets.GITHUB_TOKEN }}
-        owner: '${{ env.GITHUB_ACTOR }}'
+        owner: 'chwebdude'
         repository: '${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}'
         milestone: '${{ steps.gitversion.outputs.semVer }}'
         name: 'v${{ steps.gitversion.outputs.semVer }}'        
