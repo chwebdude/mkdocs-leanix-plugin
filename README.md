@@ -36,6 +36,7 @@ Simply create a code block of the type `leanix-factsheet` and insert the GUID of
 d3bdeca8-8f79-4ee9-af4b-e390accf9f3d
 ```
 ````
+
 #### Overview
 
 ![Overview](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Overview.png)
