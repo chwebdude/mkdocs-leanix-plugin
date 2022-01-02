@@ -1,11 +1,13 @@
 '''Package description'''
 from setuptools import setup, find_packages
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name='mkdocs-leanix-plugin',
     version='0.0.0',
     description='A MkDocs plugin to import LeanIX data',
-    long_description='Include LeanIX Factsehhets and other stuff',
     keywords='mkdocs leanix',
     url='https://github.com/chwebdude/mkdocs-leanix-plugin',
     author='Fabrice Andreis',
@@ -34,5 +36,7 @@ setup(
         ]
     },
 
-    include_package_data = True
+    include_package_data = True,
+    long_description_content_type = 'text/markdown',
+    long_description=long_description
 )
