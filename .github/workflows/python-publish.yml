@@ -51,6 +51,7 @@ jobs:
         owner: 'chwebdude'
         repository: 'mkdocs-leanix-plugin'
         name: 'v${{ steps.gitversion.outputs.semVer }}'        
+        allowEmpty: true        
         
 
     - name: Set up Python
