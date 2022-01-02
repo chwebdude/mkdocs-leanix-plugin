@@ -1,6 +1,6 @@
-# mkdocs-leanix-plugin
+# MkDocs LeanIX Plugin
 
-This is a plugin for MkDocs to display data from LeanIX.
+This is a plugin for [MkDocs](mkdocs) to display data from [LeanIX](leanix).
 
 ## Setup
 
@@ -18,19 +18,41 @@ plugins:
 
 More information about plugins in the [MkDocs documentation][mkdocs-plugins].
 
-## Config
+## Configuration
 
 * `api_token` - The API token
 * `baseurl` - Base URL of your LeanIX instance. Can be `https://yourorganization.leanix.net`
+* `workspaceid` - ID of your workspace. This is a GUID and is used do get user information
+* `material` [optional] - Set this to `true` if the material design template should be used. This requires the `pymdownx.tabbed` extension to be enabled
 
 ## Usage
 
-## See Also
+Simply create a code block of the type `leanix-factsheet` and insert the GUID of the factsheet to be shown:
 
-More information about templates [here][mkdocs-template].
+### Sample
 
-More information about blocks [here][mkdocs-block].
+````markdown
+```leanix-factsheet
+d3bdeca8-8f79-4ee9-af4b-e390accf9f3d
+```
+````
+#### Overview
 
+![Overview](docs/img/Overview.png)
+
+#### Documents
+
+![Documents](docs/img/Documents.png)
+
+#### Subscriptions
+
+![Subscriptions](docs/img/Subscriptions.png)
+
+#### Lifecycle
+
+![Lifecycle](docs/img/Lifecycle.png)
+
+[mkdocs]: https://www.mkdocs.org/
 [mkdocs-plugins]: http://www.mkdocs.org/user-guide/plugins/
-[mkdocs-template]: https://www.mkdocs.org/user-guide/custom-themes/#template-variables
 [mkdocs-block]: https://www.mkdocs.org/user-guide/styling-your-docs/#overriding-template-blocks
+[leanix]: https://www.leanix.net/
