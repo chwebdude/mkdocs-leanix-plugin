@@ -37,20 +37,7 @@ jobs:
       id: gitversion
       uses: gittools/actions/gitversion/execute@v0.9.7
 
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      # if: startsWith(github.ref, 'refs/tags/')
-      with:
-        # body_path: ${{ github.workspace }}-CHANGELOG.txt
-        # note you'll typically need to create a personal access token
-        # with permissions to create releases in the other repo
-        # token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-        draft: true
-        name: ${{ steps.gitversion.outputs.semVer }}      
-        # generate_release_notes: true  
-        tag_name: ${{ steps.gitversion.outputs.semVer }}     
-      # env:
-      #   GITHUB_REPOSITORY: my_gh_org/my_gh_repo
+    
     
 
     - name: Set up Python
@@ -68,8 +55,25 @@ jobs:
         sed -i "/^    version=/ s/[0-9]\.[0-9]\.[0-9]/${{ steps.gitversion.outputs.semVer }}/" setup.py
         python setup.py sdist bdist_wheel
         
-    - name: Publish
-      uses: pypa/gh-action-pypi-publish@master
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      # if: startsWith(github.ref, 'refs/tags/')
       with:
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+        # body_path: ${{ github.workspace }}-CHANGELOG.txt
+        # note you'll typically need to create a personal access token
+        # with permissions to create releases in the other repo
+        # token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        draft: true
+        name: ${{ steps.gitversion.outputs.semVer }}      
+        # generate_release_notes: true  
+        tag_name: ${{ steps.gitversion.outputs.semVer }}     
+        files: dist\*
+      # env:
+      #   GITHUB_REPOSITORY: my_gh_org/my_gh_repo
+    
+    # - name: Publish
+    #   uses: pypa/gh-action-pypi-publish@master
+    #   with:
+    #     password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+    #     repository_url: https://test.pypi.org/legacy/
