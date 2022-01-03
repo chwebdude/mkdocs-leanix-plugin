@@ -33,7 +33,7 @@ jobs:
        
     - name: Build
       run: |
-        sed -i "/^    version=/ s/[0-9]\.[0-9]\.[0-9]/${{ steps.gitversion.outputs.semVer }}/" setup.py
+        sed -i "/^    version=/ s/[0-9]\.[0-9]\.[0-9]/${{ steps.gitversion.outputs.legacySemVerPadded }}/" setup.py
         python setup.py sdist bdist_wheel
         
     - name: Publish
