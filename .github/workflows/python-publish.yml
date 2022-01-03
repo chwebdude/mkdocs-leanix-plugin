@@ -46,36 +46,11 @@ jobs:
         # with permissions to create releases in the other repo
         # token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         draft: true
-        name: ${{ steps.gitversion.outputs.semVer }}
+        name: ${{ steps.gitversion.outputs.semVer }}      
+        generate_release_notes: true  
       # env:
       #   GITHUB_REPOSITORY: my_gh_org/my_gh_repo
-
-    # - name: Github Release
-    #   # You may pin to the exact commit or the version.
-    #   # uses: elgohr/Github-Release-Action@ed9ebd01a0c57e64e948e7f2ff59c0159e52c204
-    #   uses: elgohr/Github-Release-Action@v3.1
-    #   with:
-    #     # The name of the release to publish
-    #     release: 'v${{ steps.gitversion.outputs.semVer }}' 
-        
-    # - uses: gittools/actions/gitreleasemanager/setup@v0.9.2
-    #   name: Install GitReleaseManager
-    #   env:
-    #     ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    #   with:
-    #     versionSpec: '0.10.x'
-
-    # - uses: gittools/actions/gitreleasemanager/create@v0.9.2
-    #   name: Create release with GitReleaseManager      
-    #   env:
-    #     ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    #   with:        
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     owner: 'chwebdude'
-    #     repository: 'mkdocs-leanix-plugin'
-    #     name: 'v${{ steps.gitversion.outputs.semVer }}'        
-    #     allowEmpty: true        
-        
+    
 
     - name: Set up Python
       uses: actions/setup-python@v2
