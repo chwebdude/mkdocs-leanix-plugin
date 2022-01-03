@@ -8,6 +8,7 @@ changelog:
       labels:
         - Semver-Minor
         - enhancement
+        - feature
     - title: Other Changes
       labels:
         - "*"
