@@ -14,9 +14,12 @@
 
 {% if fs.subscriptions %}
 === "Subscriptions"
-    {% for subs in fs.subscriptions %}
-    * {{ get_user(subs.userId) }} {% for role in subs.linkedRoles %}<span style="background-color:grey; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%; color: #fff">{{ role.name }}</span> {% endfor %}
+    | User | Type          | Roles     |
+    | -----| ------------- | --------- |
+    {% for subs in fs.subscriptions -%}
+    | {{ get_user(subs.userId) }}| {{ subs.type | capitalize }} | {{ subs.linkedRoles | join (', ', attribute = 'name') }} | 
     {% endfor %}
+ 
 {% endif %}
 
 === "Lifecycle"
@@ -26,3 +29,8 @@
     {% for phase in lc.data.phases %}
     * {{ phase.startDate }} - {{ phase.phase }}
     {% endfor %}
+
+{# Abbreviations (needs markdown extensions abbr) #}
+{% for role in fs.subscriptions | map (attribute = 'linkedRoles') | map ('first') | select("defined") | unique(attribute = 'roleId') | list %}
+*[{{ role.name }}]: {{ role.description | replace("\n", "&#10;") }}
+{% endfor %}
