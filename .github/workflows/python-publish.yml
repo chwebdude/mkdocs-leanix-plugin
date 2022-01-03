@@ -64,7 +64,7 @@ jobs:
         # note you'll typically need to create a personal access token
         # with permissions to create releases in the other repo
         # token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-        draft: true
+        draft: false
         name: ${{ steps.gitversion.outputs.semVer }}      
         generate_release_notes: true  
         tag_name: ${{ steps.gitversion.outputs.semVer }}     
