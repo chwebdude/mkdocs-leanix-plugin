@@ -22,13 +22,13 @@
  
 {% endif %}
 
-=== "Lifecycle"
-
-    {% set lc = fs.fields | selectattr("name", "equalto", "lifecycle") | list | first %}
-
+{% set lc = fs.fields | selectattr("name", "equalto", "lifecycle") | list | first %}
+{% if lc %}
+=== "Lifecycle"    
     {% for phase in lc.data.phases %}
     * {{ phase.startDate }} - {{ phase.phase }}
     {% endfor %}
+{% endif %}
 
 {# Abbreviations (needs markdown extensions abbr) #}
 {% for role in fs.subscriptions | map (attribute = 'linkedRoles') | map ('first') | select("defined") | unique(attribute = 'roleId') | list %}
