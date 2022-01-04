@@ -13,7 +13,6 @@ from jinja2 import Environment, PackageLoader
 
 env = Environment(
     loader=PackageLoader(__package__, "templates")
-
 )
 
 log = logging.getLogger(__name__)
@@ -24,7 +23,7 @@ class LeanIXPlugin(BasePlugin):
     Plugin to fetch LeanIX Data and render it as markdown in MkDocs.
     """
     config_scheme = (
-        ('api_token', config_options.Type(str, default='')),
+        ('api_token', config_options.Type(str, default=None)),
         ('baseurl', config_options.Type(str, default='https://app.leanix.net')),
         ('workspaceid', config_options.Type(str, default='')),
         ('material', config_options.Type(bool, default=None)),
@@ -59,6 +58,13 @@ class LeanIXPlugin(BasePlugin):
             log.debug('Use explicit configuration')
             self.use_material = self.config['material']
         log.debug("Material theme is %s ", self.use_material)
+
+        # Check if api token is provided trough config or environment variable
+        if self.config['api_token'] is None:
+            envvar = os.environ.get('LEANIX_API_TOKEN')
+            if envvar is None:
+                raise PluginError("Could not find a LeanIX API Token in config or environment variable");
+            self.config['api_token'] = envvar
 
         try:
             # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.

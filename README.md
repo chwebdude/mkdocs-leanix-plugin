@@ -25,12 +25,14 @@ More information about plugins in the [MkDocs documentation][mkdocs-plugins].
 * `workspaceid` - ID of your workspace. This is a GUID and is used do get user information
 * `material` [optional] - Set this to `true` if the material design template should be used. This requires the `pymdownx.tabbed` extension to be enabled
 
+Alternatively to the `api_token` in the `mkdocs.yml` a environment variable called `LEANIX_API_TOKEN` can be set. This is likely the way in CI/CD scenarios.
+
 ### Sample
 
 ```yaml
 plugins
   - leanix:
-      api_token: asdfsa23kjlsadflkjsalkjf3
+      api_token: asdfsa23kjlsadflkjsalkjf3 # or LEANIX_API_TOKEN environment variable
       baseurl: https://yourcompany.leanix.net/
       workspaceid: eb068bc1-73e3-415a-9572-f7fe5253f122
 ```
