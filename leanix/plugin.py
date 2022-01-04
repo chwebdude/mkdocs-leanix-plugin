@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import requests
+import jwt
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
@@ -16,7 +17,6 @@ env = Environment(
 )
 
 log = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
 
 
 class LeanIXPlugin(BasePlugin):
@@ -25,8 +25,7 @@ class LeanIXPlugin(BasePlugin):
     """
     config_scheme = (
         ('api_token', config_options.Type(str, default=None)),
-        ('baseurl', config_options.Type(str, default='https://app.leanix.net')),
-        ('workspaceid', config_options.Type(str, default='')),
+        ('base_url', config_options.Type(str, default='https://app.leanix.net')),
         ('material', config_options.Type(bool, default=None)),
 
     )
@@ -37,6 +36,8 @@ class LeanIXPlugin(BasePlugin):
     use_material = False
     header = {}
     docs_dir = ''
+    workspace_id = ''
+    workspace_name = ''
 
     def __init__(self):
         self.enabled = True
@@ -71,7 +72,7 @@ class LeanIXPlugin(BasePlugin):
 
         try:
             # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
-            auth_url = self.config['baseurl'] + '/services/mtm/v1/oauth2/token'
+            auth_url = self.config['base_url'] + '/services/mtm/v1/oauth2/token'
 
             response = requests.post(auth_url,
                                      auth=('apitoken',
@@ -83,11 +84,21 @@ class LeanIXPlugin(BasePlugin):
 
             auth_header = 'Bearer ' + access_token
             self.header = {'Authorization': auth_header}
+
+            # Get workspace information from token
+            token = jwt.decode(access_token, options={
+                               "verify_signature": False})
+            
+            self.workspace_id = token['principal']['permission']['workspaceId']
+            self.workspace_name = token['principal']['permission']['workspaceName']
+
             log.debug("Authenticated against LeanIX")
+            log.info("Usering workspace %s with id %s",
+                     self.workspace_name, self.workspace_id)
             return config
         except:
             log.exception(
-                "Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")
+                "Failed to authenticate against LeanIX - Verify that base_url and token are correct\n\n")
             raise
 
     def get_user(self, userid):
@@ -104,8 +115,9 @@ class LeanIXPlugin(BasePlugin):
             return self.user_cache[userid]
 
         log.debug("Get User with ID %s", userid)
-        url = self.config['baseurl'] + "/services/mtm/v1/workspaces/" + \
-            self.config['workspaceid'] + "/users/" + userid
+        url = self.config['base_url'] + "/services/mtm/v1/workspaces/" + \
+            self.workspace_id + "/users/" + userid
+
         response = requests.get(url=url, headers=self.header)
         response.raise_for_status()
         user = response.json()['data']
@@ -174,7 +186,7 @@ class LeanIXPlugin(BasePlugin):
 
         # Load LeanIX Data
         log.debug("Quering factsheet %s", matchobj.group('id'))
-        url = self.config['baseurl'] + \
+        url = self.config['base_url'] + \
             "/services/pathfinder/v1/factSheets/" + matchobj.group('id')
 
         response = requests.get(url=url, headers=self.header)
@@ -182,7 +194,7 @@ class LeanIXPlugin(BasePlugin):
 
         factsheet = response.json()['data']
 
-        return template.render(fs=factsheet, get_user=self.get_user, get_font_color=self.get_font_color)
+        return template.render(fs=factsheet, get_user=self.get_user, get_font_color=self.get_font_color, worskpace_id=self.workspace_id, workspace_name=self.workspace_name, base_url=self.config['base_url'])
 
     def on_page_markdown(self, markdown, **kwargs):
         """

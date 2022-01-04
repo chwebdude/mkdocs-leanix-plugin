@@ -1,9 +1,11 @@
 ## {{ fs.displayName }}
 
 === "Overview"    
+    {% for tag in fs.tags %} <span style="background-color:{{ tag.bgColor }}; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%; color:{{ get_font_color(tag.bgColor) }}">{{ tag.name }}</span> {% endfor %}
+
     {{ fs.description | replace("\n", "\n\t") }}
 
-    {% for tag in fs.tags %} <span style="background-color:{{ tag.bgColor }}; border-radius: 0.25em; display: inline-block; padding: .25em .4em; font-size: 75%; color:{{ get_font_color(tag.bgColor) }}">{{ tag.name }}</span> {% endfor %}
+    [:link: Leanix]({{ base_url }}{{ workspace_name }}/factsheet/{{ fs.type }}/{{ fs.id }})
 
 {% if fs.documents %}
 === "Documents"
@@ -17,18 +19,18 @@
     | User | Type          | Roles     |
     | -----| ------------- | --------- |
     {% for subs in fs.subscriptions -%}
-    | {{ get_user(subs.userId) }}| {{ subs.type | capitalize }} | {{ subs.linkedRoles | join (', ', attribute = 'name') }} | 
+    | {{ get_user(subs.userId) }}| {{ subs.type | capitalize }} | {% for role in subs.linkedRoles%} {{role.name}}{% if role.comment %} ({{role.comment}}){% endif %}{% if not loop.last %}, {% endif %} {% endfor%}
     {% endfor %}
  
 {% endif %}
 
-=== "Lifecycle"
-
-    {% set lc = fs.fields | selectattr("name", "equalto", "lifecycle") | list | first %}
-
+{% set lc = fs.fields | selectattr("name", "equalto", "lifecycle") | list | first %}
+{% if lc %}
+=== "Lifecycle"    
     {% for phase in lc.data.phases %}
     * {{ phase.startDate }} - {{ phase.phase }}
     {% endfor %}
+{% endif %}
 
 {# Abbreviations (needs markdown extensions abbr) #}
 {% for role in fs.subscriptions | map (attribute = 'linkedRoles') | map ('first') | select("defined") | unique(attribute = 'roleId') | list %}
