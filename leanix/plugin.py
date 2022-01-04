@@ -16,7 +16,7 @@ env = Environment(
 )
 
 log = logging.getLogger(__name__)
-# logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 
 class LeanIXPlugin(BasePlugin):
@@ -147,7 +147,10 @@ class LeanIXPlugin(BasePlugin):
 
         factsheet = response.json()['data']
 
-        template = env.get_template("factsheet_material.jinja2")
+        if self.config['material']:
+            template = env.get_template("factsheet_material.jinja2")
+        else:
+            template = env.get_template("factsheet.jinja2")
         return template.render(fs=factsheet, get_user=self.get_user, get_font_color=self.get_font_color)
 
     def on_page_markdown(self, markdown, **kwargs):
