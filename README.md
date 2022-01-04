@@ -21,11 +21,12 @@ More information about plugins in the [MkDocs documentation][mkdocs-plugins].
 ## Configuration
 
 * `api_token` - The API token
-* `baseurl` - Base URL of your LeanIX instance. Can be `https://yourorganization.leanix.net`
-* `workspaceid` - ID of your workspace. This is a GUID and is used do get user information
+* `base_url` - Base URL of your LeanIX instance. Can be `https://yourorganization.leanix.net`
 * `material` [optional] - Set this to `true` if the material design template should be used. This requires the `pymdownx.tabbed` extension to be enabled
 
 Alternatively to the `api_token` in the `mkdocs.yml` a environment variable called `LEANIX_API_TOKEN` can be set. This is likely the way in CI/CD scenarios.
+
+Workspace information (name and id) is retrived from the JWT token.
 
 ### Sample
 
@@ -33,8 +34,8 @@ Alternatively to the `api_token` in the `mkdocs.yml` a environment variable call
 plugins
   - leanix:
       api_token: asdfsa23kjlsadflkjsalkjf3 # or LEANIX_API_TOKEN environment variable
-      baseurl: https://yourcompany.leanix.net/
-      workspaceid: eb068bc1-73e3-415a-9572-f7fe5253f122
+      base_url: https://yourcompany.leanix.net/
+      workspace_name: test
 ```
 
 ## Usage
