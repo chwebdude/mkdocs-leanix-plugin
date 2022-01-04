@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import requests
+import jwt
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
@@ -16,8 +17,6 @@ env = Environment(
 )
 
 log = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
-
 
 class LeanIXPlugin(BasePlugin):
     """
@@ -26,7 +25,6 @@ class LeanIXPlugin(BasePlugin):
     config_scheme = (
         ('api_token', config_options.Type(str, default=None)),
         ('baseurl', config_options.Type(str, default='https://app.leanix.net')),
-        ('workspaceid', config_options.Type(str, default='')),
         ('material', config_options.Type(bool, default=None)),
 
     )
@@ -37,6 +35,8 @@ class LeanIXPlugin(BasePlugin):
     use_material = False
     header = {}
     docs_dir = ''
+    workspace_id = ''
+    workspace_name = ''
 
     def __init__(self):
         self.enabled = True
@@ -83,7 +83,15 @@ class LeanIXPlugin(BasePlugin):
 
             auth_header = 'Bearer ' + access_token
             self.header = {'Authorization': auth_header}
+
+            # Get workspace information from token
+            token = jwt.decode(access_token, options={"verify_signature": False})
+            print(token)
+            self.workspace_id = token['principal']['permission']['workspaceId']
+            self.workspace_name = token['principal']['permission']['workspaceName']
+
             log.debug("Authenticated against LeanIX")
+            log.info("Usering workspace %s with id %s", self.workspace_name, self.workspace_id)
             return config
         except:
             log.exception(
@@ -105,7 +113,8 @@ class LeanIXPlugin(BasePlugin):
 
         log.debug("Get User with ID %s", userid)
         url = self.config['baseurl'] + "/services/mtm/v1/workspaces/" + \
-            self.config['workspaceid'] + "/users/" + userid
+            self.workspace_id + "/users/" + userid
+
         response = requests.get(url=url, headers=self.header)
         response.raise_for_status()
         user = response.json()['data']
