@@ -1,18 +1,18 @@
 '''A MkDocs plugin to import data from LeanIX and render it as markdown'''
 import logging
+import os
 import re
 import requests
 
-
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
+from mkdocs.exceptions import PluginError
 
+from jinja2.environment import Template
 from jinja2 import Environment, PackageLoader
-
 
 env = Environment(
     loader=PackageLoader(__package__, "templates")
-
 )
 
 log = logging.getLogger(__name__)
@@ -24,18 +24,19 @@ class LeanIXPlugin(BasePlugin):
     Plugin to fetch LeanIX Data and render it as markdown in MkDocs.
     """
     config_scheme = (
-        ('api_token', config_options.Type(str, default='')),
+        ('api_token', config_options.Type(str, default=None)),
         ('baseurl', config_options.Type(str, default='https://app.leanix.net')),
         ('workspaceid', config_options.Type(str, default='')),
         ('material', config_options.Type(bool, default=None)),
 
     )
 
-    factsheet_regex = r'(```leanix-factsheet\s*\n)(?P<id>.*)(\n```)'
+    factsheet_regex = r'(```leanix-factsheet\s*\n)(?P<id>\S*)\n((?P<template>\S*)\n)?(```)'
     rgba_regex = r'[rRgGbBaA]{3,4}\s*\(\s*(?P<red>\d{1,3})[,\s]*(?P<green>\d{1,3})[,\s]*(?P<blue>\d{1,3})[,\s]*.*\)'
     user_cache = {}
     use_material = False
     header = {}
+    docs_dir = ''
 
     def __init__(self):
         self.enabled = True
@@ -45,10 +46,12 @@ class LeanIXPlugin(BasePlugin):
         """
         Executed on plugin configuration from MkDocs
         """
+        self.docs_dir = os.path.realpath(
+            config['docs_dir'])  # save for template directory checking
+
         # Check if is material theme
         if self.config['material'] is None:
             log.debug('Autodetermine if material theme is used')
-
             if 'material' in config['theme'].name:
                 self.use_material = True
             else:
@@ -57,6 +60,14 @@ class LeanIXPlugin(BasePlugin):
             log.debug('Use explicit configuration')
             self.use_material = self.config['material']
         log.debug("Material theme is %s ", self.use_material)
+
+        # Check if api token is provided trough config or environment variable
+        if self.config['api_token'] is None:
+            envvar = os.environ.get('LEANIX_API_TOKEN')
+            if envvar is None:
+                raise PluginError(
+                    "Could not find a LeanIX API Token in config or environment variable")
+            self.config['api_token'] = envvar
 
         try:
             # or something else if you have a dedicated MTM instance - you will know it if that is the case and if you don't just use this one.
@@ -75,7 +86,8 @@ class LeanIXPlugin(BasePlugin):
             log.debug("Authenticated against LeanIX")
             return config
         except:
-            log.exception("Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")
+            log.exception(
+                "Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")
             raise
 
     def get_user(self, userid):
@@ -138,6 +150,29 @@ class LeanIXPlugin(BasePlugin):
         return "#fff"
 
     def _factsheet(self, matchobj):
+        # Load Template
+        log.debug("Load template")
+        if matchobj.group('template'):
+            template_path = os.path.realpath(os.path.join(self.docs_dir, matchobj.group(
+                'template')))  # Combine paths -> template must be inside of docs directory
+            log.debug("Load specified template at %s", template_path)
+            if not os.path.exists(template_path):  # Check if template exists
+                log.error("The defined template '%s' must be stored inside of '%s'",
+                          template_path, self.docs_dir)
+                raise PluginError(
+                    f"The defined template '{template_path}' could not be found. It must be stored inside of '{self.docs_dir}'")
+            with open(template_path, "r") as template_file:
+                template = Template(template_file.read())
+
+        else:
+            if self.config['material']:
+                log.debug("Loading default material template")
+                template = env.get_template("factsheet_material.jinja2")
+            else:
+                log.debug("Loading default template")
+                template = env.get_template("factsheet.jinja2")
+
+        # Load LeanIX Data
         log.debug("Quering factsheet %s", matchobj.group('id'))
         url = self.config['baseurl'] + \
             "/services/pathfinder/v1/factSheets/" + matchobj.group('id')
@@ -147,7 +182,6 @@ class LeanIXPlugin(BasePlugin):
 
         factsheet = response.json()['data']
 
-        template = env.get_template("factsheet_material.md")
         return template.render(fs=factsheet, get_user=self.get_user, get_font_color=self.get_font_color)
 
     def on_page_markdown(self, markdown, **kwargs):

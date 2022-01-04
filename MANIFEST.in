@@ -1,1 +1,1 @@
-recursive-include leanix/templates *.md
+recursive-include leanix/templates *.*
