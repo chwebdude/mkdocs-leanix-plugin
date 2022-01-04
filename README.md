@@ -25,6 +25,16 @@ More information about plugins in the [MkDocs documentation][mkdocs-plugins].
 * `workspaceid` - ID of your workspace. This is a GUID and is used do get user information
 * `material` [optional] - Set this to `true` if the material design template should be used. This requires the `pymdownx.tabbed` extension to be enabled
 
+### Sample
+
+```yaml
+plugins
+  - leanix:
+      api_token: asdfsa23kjlsadflkjsalkjf3
+      baseurl: https://yourcompany.leanix.net/
+      workspaceid: eb068bc1-73e3-415a-9572-f7fe5253f122
+```
+
 ## Usage
 
 Simply create a code block of the type `leanix-factsheet` and insert the GUID of the factsheet to be shown:
