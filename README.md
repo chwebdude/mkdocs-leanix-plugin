@@ -37,19 +37,37 @@ d3bdeca8-8f79-4ee9-af4b-e390accf9f3d
 ```
 ````
 
-#### Overview
+### Customization
+
+Own templates can be used. Add the path to the template after the factsheet GUID. The template must be inside the docs directory.
+
+````markdown
+```leanix-factsheet
+d3bdeca8-8f79-4ee9-af4b-e390accf9f3d
+templates/custom_factsheet.jinja2
+```
+````
+
+Get some inspiration of the [packed templates](gh-templates). A factsheet object will be provided as `fs` and can be printed out with `{{ fs }}`. Two helper functions are provided:
+
+* `get_user(userid)` - Gets friendly username from LeanIX and creates a Markdown mailto-link.
+* `get_font_color(backgroundColor)` - Gets a black or white CSS color from a provided CSS background color. Can be used to ensure enough contrast between text and background color.
+
+## Screenshots
+
+### Overview
 
 ![Overview](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Overview.png)
 
-#### Documents
+### Documents
 
 ![Documents](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Documents.png)
 
-#### Subscriptions
+### Subscriptions
 
 ![Subscriptions](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Subscriptions.png)
 
-#### Lifecycle
+### Lifecycle
 
 ![Lifecycle](https://raw.githubusercontent.com/chwebdude/mkdocs-leanix-plugin/master/docs/img/Lifecycle.png)
 
@@ -57,3 +75,4 @@ d3bdeca8-8f79-4ee9-af4b-e390accf9f3d
 [mkdocs-plugins]: http://www.mkdocs.org/user-guide/plugins/
 [mkdocs-block]: https://www.mkdocs.org/user-guide/styling-your-docs/#overriding-template-blocks
 [leanix]: https://www.leanix.net/
+[gh-templates]: https://github.com/chwebdude/mkdocs-leanix-plugin/tree/master/leanix/templates
