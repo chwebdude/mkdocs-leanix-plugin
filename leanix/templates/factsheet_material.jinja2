@@ -6,7 +6,7 @@
     {{ fs.description | replace("\n", "\n\t") }}
 
     [:link: Leanix]({{ base_url }}{{ workspace_name }}/factsheet/{{ fs.type }}/{{ fs.id }})
-    
+
 {% if fs.documents %}
 === "Documents"
     {% for document in fs.documents %}
@@ -19,7 +19,7 @@
     | User | Type          | Roles     |
     | -----| ------------- | --------- |
     {% for subs in fs.subscriptions -%}
-    | {{ get_user(subs.userId) }}| {{ subs.type | capitalize }} | {{ subs.linkedRoles | join (', ', attribute = 'name') }} | 
+    | {{ get_user(subs.userId) }}| {{ subs.type | capitalize }} | {% for role in subs.linkedRoles%} {{role.name}}{% if role.comment %} ({{role.comment}}){% endif %}{% if not loop.last %}, {% endif %} {% endfor%}
     {% endfor %}
  
 {% endif %}
