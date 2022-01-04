@@ -16,7 +16,8 @@ env = Environment(
 )
 
 log = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG) 
+logging.basicConfig(level=logging.DEBUG)
+
 
 class LeanIXPlugin(BasePlugin):
     """
@@ -45,7 +46,8 @@ class LeanIXPlugin(BasePlugin):
         """
         Executed on plugin configuration from MkDocs
         """
-        self.docs_dir = os.path.realpath(config['docs_dir']) # save for template directory checking
+        self.docs_dir = os.path.realpath(
+            config['docs_dir'])  # save for template directory checking
 
         # Check if is material theme
         if self.config['material'] is None:
@@ -63,7 +65,8 @@ class LeanIXPlugin(BasePlugin):
         if self.config['api_token'] is None:
             envvar = os.environ.get('LEANIX_API_TOKEN')
             if envvar is None:
-                raise PluginError("Could not find a LeanIX API Token in config or environment variable");
+                raise PluginError(
+                    "Could not find a LeanIX API Token in config or environment variable")
             self.config['api_token'] = envvar
 
         try:
@@ -83,7 +86,8 @@ class LeanIXPlugin(BasePlugin):
             log.debug("Authenticated against LeanIX")
             return config
         except:
-            log.exception("Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")
+            log.exception(
+                "Failed to authenticate against LeanIX - Verify that baseURL and token are correct\n\n")
             raise
 
     def get_user(self, userid):
@@ -146,17 +150,20 @@ class LeanIXPlugin(BasePlugin):
         return "#fff"
 
     def _factsheet(self, matchobj):
-        # Load Template        
+        # Load Template
         log.debug("Load template")
-        if(matchobj.group('template')):
-            template_path = os.path.realpath(os.path.join(self.docs_dir, matchobj.group('template'))) # Combine paths -> template must be inside of docs directory
+        if matchobj.group('template'):
+            template_path = os.path.realpath(os.path.join(self.docs_dir, matchobj.group(
+                'template')))  # Combine paths -> template must be inside of docs directory
             log.debug("Load specified template at %s", template_path)
-            if not os.path.exists(template_path): # Check if template exists
-                log.error("The defined template '%s' must be stored inside of '%s'", template_path, self.docs_dir)
-                raise PluginError(f"The defined template '{template_path}' could not be found. It must be stored inside of '{self.docs_dir}'")
-            f = open(template_path, "r")                
-            template = Template(f.read())            
-                
+            if not os.path.exists(template_path):  # Check if template exists
+                log.error("The defined template '%s' must be stored inside of '%s'",
+                          template_path, self.docs_dir)
+                raise PluginError(
+                    f"The defined template '{template_path}' could not be found. It must be stored inside of '{self.docs_dir}'")
+            with open(template_path, "r") as template_file:
+                template = Template(template_file.read())
+
         else:
             if self.config['material']:
                 log.debug("Loading default material template")
@@ -164,7 +171,7 @@ class LeanIXPlugin(BasePlugin):
             else:
                 log.debug("Loading default template")
                 template = env.get_template("factsheet.jinja2")
-        
+
         # Load LeanIX Data
         log.debug("Quering factsheet %s", matchobj.group('id'))
         url = self.config['baseurl'] + \
@@ -174,7 +181,6 @@ class LeanIXPlugin(BasePlugin):
         response.raise_for_status()
 
         factsheet = response.json()['data']
-
 
         return template.render(fs=factsheet, get_user=self.get_user, get_font_color=self.get_font_color)
 
