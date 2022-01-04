@@ -17,7 +17,7 @@ setup(
     install_requires=[
         'mkdocs>=1.0.4',
         'requests>=2.0.0',
-        'pyjwt>=2.0.0'
+        'pyjwt'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
